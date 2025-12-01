@@ -1,15 +1,36 @@
 <html>
-    <head>
-        <title>parent Login</title>
-    </head>
-    <body>
-        <h1>Parent Login</h1>
-        <form action="login.php" method="post">
-            <label for="username">Username:</label>
-            <input type="text" id="username" name="username">
-            <label for="password">Password:</label>
-            <input type="password" id="password" name="password">
+<head>
+    <title>Parent Login</title>
+</head>
+
+<body style="background: url('backgroud_image.jpg'); background-size: cover; background-position: center;">
+
+    <h1 style="background-color: #491976; color: white; padding: 3px;">Parent Login</h1>
+
+    <div class="container" 
+
+        <form action="parent_login.php" method="post"
+              style="
+                  background-color: #195876;
+                  width: 575px;
+                  margin-right: 4px;
+                  padding: 3px;
+                  border-radius: 8px;
+                  box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
+                  opacity: 1;
+              ">
+
+            <label for="username" style="color:white;">Username:</label><br>
+            <input type="text" id="username" name="username"><br><br>
+
+            <label for="password" style="color:white;">Password:</label><br>
+            <input type="password" id="password" name="password"><br><br>
+
             <input type="submit" value="Login">
+
         </form>
-    </body>
+
+    </div>
+
+</body>
 </html>
