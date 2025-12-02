@@ -1,36 +1,111 @@
+<!DOCTYPE html>
 <html>
 <head>
     <title>Parent Login</title>
+    <style>
+        body {
+            background: url('backgroud_image.jpg') no-repeat center center fixed;
+            background-size: cover;
+            font-family: Arial, sans-serif;
+        }
+        h1 {
+            background-color: #491976;
+            color: white;
+            padding: 10px;
+        }
+        .container {
+            background-color: #195876;
+            width: 400px;
+            padding: 20px;
+            margin: 50px auto;
+            border-radius: 8px;
+            box-shadow: 1px 1px 5px rgba(0,0,0,0.3);
+            color: white;
+        }
+        input[type=text], input[type=password] {
+            width: 95%;
+            padding: 8px;
+            margin: 5px 0 15px 0;
+            border-radius: 5px;
+            border: none;
+        }
+        input[type=submit] {
+            padding: 10px 20px;
+            background-color: #491976;
+            color: white;
+            border: none;
+            border-radius: 5px;
+            cursor: pointer;
+        }
+        .accounts {
+            background: #ffffffcc;
+            color: black;
+            padding: 10px;
+            border-radius: 8px;
+            margin-top: 20px;
+        }
+    </style>
 </head>
+<body>
 
-<body style="background: url('backgroud_image.jpg'); background-size: cover; background-position: center;">
+    <h1>Parent Login</h1>
 
-    <h1 style="background-color: #491976; color: white; padding: 3px;">Parent Login</h1>
+    <div class="container">
+        <form id="loginForm">
+            <label for="username">Username:</label><br>
+            <input type="text" id="username" name="username" required><br>
 
-    <div class="container" 
-
-        <form action="parent_login.php" method="post"
-              style="
-                  background-color: #195876;
-                  width: 575px;
-                  margin-right: 4px;
-                  padding: 3px;
-                  border-radius: 8px;
-                  box-shadow: 1px 1px 3px rgba(0,0,0,0.3);
-                  opacity: 1;
-              ">
-
-            <label for="username" style="color:white;">Username:</label><br>
-            <input type="text" id="username" name="username"><br><br>
-
-            <label for="password" style="color:white;">Password:</label><br>
-            <input type="password" id="password" name="password"><br><br>
+            <label for="password">Password:</label><br>
+            <input type="password" id="password" name="password" required><br>
 
             <input type="submit" value="Login">
-
         </form>
 
+        <div class="accounts">
+            <h3>Test Login Accounts</h3>
+            <strong>Parents:</strong><br>
+            parent_john / Parent123!<br>
+            parent_mary / MaryParent456<br>
+            parent_smith / SmithParent789<br><br>
+
+            <strong>Students:</strong><br>
+            student_amy / AmyStudent123<br>
+            student_mark / MarkStud456<br>
+            student_lee / LeeStudent789<br><br>
+
+            <strong>Admin:</strong><br>
+            admin_master / Admin@999
+        </div>
     </div>
+
+    <script>
+        // Fake accounts
+        const accounts = [
+            { username: "parent_john", password: "Parent123!", role: "Parent" },
+            { username: "parent_mary", password: "MaryParent456", role: "Parent" },
+            { username: "parent_smith", password: "SmithParent789", role: "Parent" },
+            { username: "student_amy", password: "AmyStudent123", role: "Student" },
+            { username: "student_mark", password: "MarkStud456", role: "Student" },
+            { username: "student_lee", password: "LeeStudent789", role: "Student" },
+            { username: "admin_master", password: "Admin@999", role: "Admin" }
+        ];
+
+        const form = document.getElementById("loginForm");
+
+        form.addEventListener("submit", function(e) {
+            e.preventDefault();
+            const username = document.getElementById("username").value;
+            const password = document.getElementById("password").value;
+
+            const account = accounts.find(acc => acc.username === username && acc.password === password);
+
+            if (account) {
+                alert("Login successful! Role: " + account.role);
+            } else {
+                alert("Invalid username or password!");
+            }
+        });
+    </script>
 
 </body>
 </html>
