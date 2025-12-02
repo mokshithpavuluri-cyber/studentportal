@@ -1,68 +1,44 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>Parent Login</title>
+    <title>Role-Based Login</title>
     <style>
         body {
-            background: url('backgroud_image.jpg') no-repeat center center fixed;
-            background-size: cover;
             font-family: Arial, sans-serif;
+            background: #cce7ff;
+            text-align: center;
+            margin: 0;
+            padding: 0;
         }
-        h1 {
-            background-color: #491976;
-            color: white;
-            padding: 10px;
-        }
-        .container {
-            background-color: #195876;
-            width: 400px;
-            padding: 20px;
+        .container, .dashboard {
+            width: 500px;
             margin: 50px auto;
-            border-radius: 8px;
+            padding: 20px;
+            border-radius: 10px;
             box-shadow: 1px 1px 5px rgba(0,0,0,0.3);
             color: white;
         }
-        input[type=text], input[type=password] {
-            width: 95%;
-            padding: 8px;
-            margin: 5px 0 15px 0;
-            border-radius: 5px;
-            border: none;
-        }
-        input[type=submit] {
-            padding: 10px 20px;
-            background-color: #491976;
-            color: white;
-            border: none;
-            border-radius: 5px;
-            cursor: pointer;
-        }
-        .accounts {
-            background: #ffffffcc;
-            color: black;
-            padding: 10px;
-            border-radius: 8px;
-            margin-top: 20px;
-        }
+        .container { background: #195876; }
+        .dashboard { display: none; background: #195876; }
+        input { margin: 5px 0; padding: 10px; width: 90%; border-radius: 5px; border: none; }
+        button { padding: 10px 20px; margin-top: 10px; border-radius: 5px; border: none; cursor: pointer; background: #491976; color: white; }
+        .info { background: #ffffffcc; color: black; padding: 10px; border-radius: 8px; margin-top: 15px; text-align: left; }
+        table { width: 100%; border-collapse: collapse; margin-top: 10px; }
+        th, td { border: 1px solid #555; padding: 5px; text-align: left; }
+        th { background: #491976; color: white; }
     </style>
 </head>
 <body>
 
-    <h1>Parent Login</h1>
+    <!-- Login Form -->
+    <div class="container" id="loginContainer">
+        <h1>Login</h1>
+        <input type="text" id="username" placeholder="Username"><br>
+        <input type="password" id="password" placeholder="Password"><br>
+        <button onclick="login()">Login</button>
 
-    <div class="container">
-        <form id="loginForm">
-            <label for="username">Username:</label><br>
-            <input type="text" id="username" name="username" required><br>
-
-            <label for="password">Password:</label><br>
-            <input type="password" id="password" name="password" required><br>
-
-            <input type="submit" value="Login">
-        </form>
-
-        <div class="accounts">
-            <h3>Test Login Accounts</h3>
+        <div class="info">
+            <h3>Test Accounts</h3>
             <strong>Parents:</strong><br>
             parent_john / Parent123!<br>
             parent_mary / MaryParent456<br>
@@ -78,33 +54,98 @@
         </div>
     </div>
 
+    <!-- Dashboard -->
+    <div class="dashboard" id="dashboard">
+        <h1 id="dashboardTitle"></h1>
+        <div id="dashboardContent" class="info"></div>
+        <button onclick="logout()">Logout</button>
+    </div>
+
     <script>
-        // Fake accounts
+        // Fake accounts with additional info
         const accounts = [
-            { username: "parent_john", password: "Parent123!", role: "Parent" },
-            { username: "parent_mary", password: "MaryParent456", role: "Parent" },
-            { username: "parent_smith", password: "SmithParent789", role: "Parent" },
-            { username: "student_amy", password: "AmyStudent123", role: "Student" },
-            { username: "student_mark", password: "MarkStud456", role: "Student" },
-            { username: "student_lee", password: "LeeStudent789", role: "Student" },
+            { username: "parent_john", password: "Parent123!", role: "Parent",
+              child: { name: "Amy", dob: "2012-05-15", grade: "6th", assignments: ["Math HW 1", "Science Project"], grades: {Math: "A", Science: "B+"}, schedule: ["Mon: Math", "Tue: Science", "Wed: English"] } },
+            { username: "parent_mary", password: "MaryParent456", role: "Parent",
+              child: { name: "Mark", dob: "2011-09-10", grade: "7th", assignments: ["English Essay", "History HW"], grades: {English: "A-", History: "B"}, schedule: ["Mon: History", "Tue: Math", "Wed: English"] } },
+            { username: "parent_smith", password: "SmithParent789", role: "Parent",
+              child: { name: "Lee", dob: "2013-03-20", grade: "5th", assignments: ["Science HW", "Math Quiz"], grades: {Science: "B+", Math: "A"}, schedule: ["Mon: Math", "Tue: Science", "Wed: English"] } },
+            { username: "student_amy", password: "AmyStudent123", role: "Student",
+              dob: "2012-05-15", grade: "6th", assignments: ["Math HW 1", "Science Project"], grades: {Math: "A", Science: "B+"}, schedule: ["Mon: Math", "Tue: Science", "Wed: English"] },
+            { username: "student_mark", password: "MarkStud456", role: "Student",
+              dob: "2011-09-10", grade: "7th", assignments: ["English Essay", "History HW"], grades: {English: "A-", History: "B"}, schedule: ["Mon: History", "Tue: Math", "Wed: English"] },
+            { username: "student_lee", password: "LeeStudent789", role: "Student",
+              dob: "2013-03-20", grade: "5th", assignments: ["Science HW", "Math Quiz"], grades: {Science: "B+", Math: "A"}, schedule: ["Mon: Math", "Tue: Science", "Wed: English"] },
             { username: "admin_master", password: "Admin@999", role: "Admin" }
         ];
 
-        const form = document.getElementById("loginForm");
+        const loginContainer = document.getElementById("loginContainer");
+        const dashboard = document.getElementById("dashboard");
+        const dashboardTitle = document.getElementById("dashboardTitle");
+        const dashboardContent = document.getElementById("dashboardContent");
 
-        form.addEventListener("submit", function(e) {
-            e.preventDefault();
+        function login() {
             const username = document.getElementById("username").value;
             const password = document.getElementById("password").value;
 
             const account = accounts.find(acc => acc.username === username && acc.password === password);
 
-            if (account) {
-                alert("Login successful! Role: " + account.role);
+            if(account){
+                loginContainer.style.display = "none";
+                dashboard.style.display = "block";
+                dashboardTitle.textContent = account.role + " Dashboard";
+
+                if(account.role === "Parent"){
+                    const child = account.child;
+                    dashboardContent.innerHTML = `
+                        <h3>Child Info</h3>
+                        <p><strong>Name:</strong> ${child.name}</p>
+                        <p><strong>Date of Birth:</strong> ${child.dob}</p>
+                        <p><strong>Grade:</strong> ${child.grade}</p>
+                        <h4>Assignments</h4>
+                        <ul>${child.assignments.map(a => `<li>${a}</li>`).join('')}</ul>
+                        <h4>Grades</h4>
+                        <table>
+                            <tr><th>Subject</th><th>Grade</th></tr>
+                            ${Object.entries(child.grades).map(([sub, g]) => `<tr><td>${sub}</td><td>${g}</td></tr>`).join('')}
+                        </table>
+                        <h4>Schedule</h4>
+                        <ul>${child.schedule.map(s => `<li>${s}</li>`).join('')}</ul>
+                    `;
+                } else if(account.role === "Student"){
+                    dashboardContent.innerHTML = `
+                        <p><strong>Name:</strong> ${account.username}</p>
+                        <p><strong>Date of Birth:</strong> ${account.dob}</p>
+                        <p><strong>Grade:</strong> ${account.grade}</p>
+                        <h4>Assignments</h4>
+                        <ul>${account.assignments.map(a => `<li>${a}</li>`).join('')}</ul>
+                        <h4>Grades</h4>
+                        <table>
+                            <tr><th>Subject</th><th>Grade</th></tr>
+                            ${Object.entries(account.grades).map(([sub, g]) => `<tr><td>${sub}</td><td>${g}</td></tr>`).join('')}
+                        </table>
+                        <h4>Schedule</h4>
+                        <ul>${account.schedule.map(s => `<li>${s}</li>`).join('')}</ul>
+                    `;
+                } else if(account.role === "Admin"){
+                    dashboardContent.innerHTML = `
+                        <p>Welcome Admin! You have full control of the system.</p>
+                        <p>You can view all accounts and data (not implemented in this demo).</p>
+                    `;
+                }
+
             } else {
                 alert("Invalid username or password!");
             }
-        });
+        }
+
+        function logout(){
+            dashboard.style.display = "none";
+            loginContainer.style.display = "block";
+            dashboardContent.innerHTML = "";
+            document.getElementById("username").value = "";
+            document.getElementById("password").value = "";
+        }
     </script>
 
 </body>
